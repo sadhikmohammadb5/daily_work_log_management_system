@@ -1,0 +1,132 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>My Work Logs</h4>
+    <a href="{{ url_for('add_log') }}" class="btn btn-primary btn-sm">+ Add Log</a>
+</div>
+
+<!--  MY PROGRESS -->
+<div class="card shadow p-3 mb-3">
+    <strong>Total Logs:</strong> {{ total_logs }} <br>
+    <strong>Approved Logs:</strong> {{ approved_logs }}
+</div>
+
+<!--  PROGRESS CHART -->
+<div class="card shadow p-3 mb-4">
+    <h5>My Progress</h5>
+    <div class="progress-chart">
+    <div class="bar-container">
+        <div class="bar approved">
+            <span>Approved</span>
+            <div class="bar-fill" id="approvedBar"></div>
+            <small id="approvedCount"></small>
+        </div>
+
+        <div class="bar pending">
+            <span>Pending</span>
+            <div class="bar-fill" id="pendingBar"></div>
+            <small id="pendingCount"></small>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<!--> LOG TABLE -->
+<div class="card shadow">
+    <table class="table table-hover mb-0">
+        <thead class="table-light">
+            <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th width="160">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.work_date }}</td>
+                <td>{{ log.description }}</td>
+                <td>
+                    <span class="badge bg-secondary">{{ log.status }}</span>
+                </td>
+                <td>
+                    <a href="{{ url_for('edit_log', id=log.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{{ url_for('delete_log', id=log.id) }}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Delete this log?')">Delete</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="text-center text-muted">No logs yet</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- SCRIPT -->
+<script>
+const myApproved = {{ approved_logs }};
+const myPending = {{ pending_logs }};
+const total = myApproved + myPending;
+
+//Calculate percentages
+const approvedPercent = total ? (myApproved / total) * 100 : 0;
+const pendingPercent = total ? (myPending / total) * 100 : 0;
+
+// Set bar widths
+document.getElementById("approvedBar").style.width = approvedPercent + "%";
+document.getElementById("pendingBar").style.width = pendingPercent + "%";
+
+// Set counts
+document.getElementById("approvedCount").innerText = myApproved + " Logs";
+document.getElementById("pendingCount").innerText = myPending + " Logs";
+</script>
+
+<style>
+.progress-chart {
+    width: 100%;
+    padding: 10px 0;
+}
+
+.bar-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.bar span {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.bar small {
+    display: block;
+    margin-top: 4px;
+    color: #666;
+}
+
+.bar-fill {
+    height: 26px;
+    border-radius: 6px;
+    transition: width 0.6s ease;
+    margin-top: 6px;
+}
+
+/* Approved bar */
+.bar.approved .bar-fill {
+    background: #1cc88a;
+}
+
+/* Pending bar */
+.bar.pending .bar-fill {
+    background: #f6c23e;
+}
+</style>
+
+
+{% endblock %}
