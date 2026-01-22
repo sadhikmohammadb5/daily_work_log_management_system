@@ -9,14 +9,14 @@ app = Flask(__name__)
 app.secret_key = "secret123"
 
 
-# ---------- DATABASE ----------
+#  DATABASE
 def get_db():
     conn = sqlite3.connect("database.db",)
     conn.row_factory = sqlite3.Row
     return conn
 
 
-# ---------- LOGIN ----------
+# LOGIN
 @app.route("/", methods=["GET", "POST"])
 
 @app.route("/index")
@@ -64,7 +64,7 @@ def login():
 
 
 
-# ---------- REGISTER ----------
+# REGISTER
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -97,7 +97,7 @@ def register():
     return render_template("register.html")
 
 
-# ---------- DASHBOARD ----------
+#  DASHBOARD 
 @app.route("/dashboard")
 def dashboard():
     if "user_id" not in session:
@@ -109,7 +109,7 @@ def dashboard():
     return redirect(url_for("employee_dashboard"))
 
 
-# ---------- EMPLOYEE DASHBOARD ----------
+# EMPLOYEE DASHBOARD
 @app.route("/employee_dashboard")
 def employee_dashboard():
     if "user_id" not in session:
@@ -152,7 +152,7 @@ def employee_dashboard():
     )
 
 
-# ---------- ADD LOG ----------
+# ADD LOG 
 @app.route("/add_log", methods=["GET", "POST"])
 def add_log():
     if request.method == "POST":
@@ -172,7 +172,7 @@ def add_log():
     return render_template("add_log.html")
 
 
-# ---------- EDIT LOG ----------
+#  EDIT LOG 
 @app.route("/edit_log/<int:id>", methods=["GET", "POST"])
 def edit_log(id):
     conn = get_db()
@@ -198,7 +198,7 @@ def edit_log(id):
     return render_template("edit_log.html", log=log)
 
 
-# ---------- DELETE LOG ----------
+# DELETE LOG
 @app.route("/delete_log/<int:id>")
 def delete_log(id):
     conn = get_db()
@@ -208,7 +208,7 @@ def delete_log(id):
     return redirect(url_for("employee_dashboard"))
 
 
-# ---------- ADMIN DASHBOARD ----------
+#  ADMIN DASHBOARD 
 @app.route("/admin_dashboard")
 def admin_dashboard():
     if "user_id" not in session or session["role"] != "admin":
@@ -249,7 +249,7 @@ def admin_dashboard():
         
     )
 
-# ---------- APPROVE ----------
+#  APPROVE
 @app.route("/approve/<int:id>")
 def approve(id):
     conn = get_db()
@@ -262,7 +262,7 @@ def approve(id):
     return redirect(url_for("admin_dashboard"))
 
 
-# ---------- LOGOUT ----------
+# LOGOUT 
 @app.route("/logout")
 def logout():
     session.clear()
